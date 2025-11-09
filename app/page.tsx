@@ -6,11 +6,14 @@ import { DiffViewer } from "@/components/DiffViewer";
 import { Button } from "@/components/ui/button";
 import { compareJSON, DiffNode } from "@/lib/jsonDiff";
 import { validateJSON, getSampleJSON, formatJSON } from "@/lib/jsonUtils";
-import { GitCompare, Sparkles, Download } from "lucide-react";
+import { GitCompare, Sparkles, Download, Sun, Moon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useTheme } from "next-themes";
 
 export default function Home() {
   const { toast } = useToast();
+  const { theme, setTheme } = useTheme();
+
   const [leftJson, setLeftJson] = useState("");
   const [rightJson, setRightJson] = useState("");
   const [diffs, setDiffs] = useState<DiffNode[]>([]);
@@ -132,21 +135,42 @@ export default function Home() {
                 <GitCompare className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">JSON Semantic Diff</h1>
+                <h1 className="text-2xl font-bold text-foreground">
+                  JSON Semantic Diff
+                </h1>
                 <p className="text-sm text-muted-foreground">
                   Compare JSON objects semantically with multi-level nesting
                 </p>
               </div>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleLoadSample}
-              className="gap-2"
-            >
-              <Sparkles className="h-4 w-4" />
-              Load Sample
-            </Button>
+
+            {/* Right-side header controls */}
+            <div className="flex items-center gap-3">
+              {/* Theme toggle */}
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Toggle theme"
+                onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+              >
+                {theme === "light" ? (
+                  <Moon className="h-5 w-5" />
+                ) : (
+                  <Sun className="h-5 w-5" />
+                )}
+              </Button>
+
+              {/* Load sample */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleLoadSample}
+                className="gap-2"
+              >
+                <Sparkles className="h-4 w-4" />
+                Load Sample
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -207,7 +231,7 @@ export default function Home() {
             <GitCompare className="h-5 w-5" />
             {isComparing ? "Comparing..." : "Compare JSON"}
           </Button>
-          
+
           {diffs.length > 0 && (
             <Button
               variant="outline"
